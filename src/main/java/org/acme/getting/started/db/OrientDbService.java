@@ -3,8 +3,12 @@ package org.acme.getting.started.db;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.OEdge;
 import com.orientechnologies.orient.core.record.OVertex;
+import com.orientechnologies.orient.core.sql.executor.OResult;
+import com.orientechnologies.orient.core.sql.executor.OResultSet;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class OrientDbService {
@@ -51,6 +55,23 @@ public class OrientDbService {
         OEdge edgeWrote = db.newEdge(vAuthor, vArticle, "wrote");
         edgeWrote.save();
         return edgeWrote;
+    }
+
+    public List<String> getArticlesByAuthor(String name) {
+
+        String query = "SELECT expand(out('wrote')) from Author where firstName = ?";
+        OResultSet rs = db.query(query, name);
+
+        List<String> result = new ArrayList<>();
+
+        while (rs.hasNext()) {
+            OResult item = rs.next();
+            String title = item.getProperty("title");
+            result.add(title);
+        }
+
+        rs.close();
+        return result;
     }
 
 }

@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/v1/data")
 public class DataBookController {
@@ -50,4 +51,11 @@ public class DataBookController {
         return orientDbService.addRelateWrote(vAuthor, vArticle).toJSON();
     }
 
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/articlethisauth")
+    public String getArticlesByAuthor(@QueryParam("name") String name) {
+        List<String> result = orientDbService.getArticlesByAuthor(name);
+        return result.toString();
+    }
 }
